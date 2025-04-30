@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SKYMAX Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="https://assets.onecompiler.app/4337ujhn4/43g5uufzg/1000025554.jpg" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #000;
+      color: red;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-color: transparent;
+    }
+
+    .border-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      height: 100vh;
+      border: 8px solid red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 25px red, inset 0 0 25px red;
+    }
+
+    .content-wrapper {
+      width: 90%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      height: 100%;
+      padding: 20px 0;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      margin: 0;
+      text-shadow: 0 0 10px red, 0 0 25px red;
+    }
+
+    .logo-image {
+      width: 200px;
+      height: 200px;
+      border: 4px solid red;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 20px red, 0 0 40px red;
+      animation: pulseGlow 2s infinite alternate;
+    }
+
+    p {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 0 0 8px red;
+      margin: 10px 0;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      border: 3px solid red;
+      background: transparent;
+      color: red;
+      font-size: 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 0 15px red;
+      outline: none;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background-color: red;
+      color: black;
+      font-size: 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 15px red, 0 0 30px red;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ff1a1a;
+      box-shadow: 0 0 30px red, 0 0 60px red;
+    }
+
+    .get-key {
+      margin-top: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      color: red;
+      text-decoration: none;
+      text-shadow: 0 0 8px red;
+    }
+
+    .get-key:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 15px red, 0 0 30px red;
+      }
+      100% {
+        box-shadow: 0 0 30px red, 0 0 60px red;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="border-wrapper">
+    <div class="content-wrapper">
+      <h1>SKYMAX</h1>
+      <img class="logo-image" src="https://assets.onecompiler.app/4337ujhn4/43g5uufzg/1000025554.jpg" alt="Logo" />
+      <p>Enter your valid key</p>
+      <input type="password" id="keyInput" placeholder="Enter key" />
+      <button onclick="checkKey()">ENTER</button>
+      <a class="get-key" href="https://t.me/Tcjod12" target="_blank">Get key?</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 100, "density": { "enable": true, "value_area": 800 }},
+        "color": { "value": "#ff2e2e" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 1 },
+        "size": {
+          "value": 4,
+          "random": true,
+          "anim": { "enable": true, "speed": 4, "size_min": 1, "sync": false }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 130,
+          "color": "#ff2e2e",
+          "opacity": 0.6,
+          "width": 1.4
+        },
+        "move": {
+          "enable": true,
+          "speed": 2,
+          "random": true,
+          "out_mode": "out"
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" }
+        },
+        "modes": {
+          "grab": {
+            "distance": 140,
+            "line_linked": { "opacity": 1 }
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+
+<script>
+  const validKeys = [
+    "SKYMAX#2025!@",
+    "Z3r0G0d-K3y!!",
+    "MAXKEY-92!x@Bz",
+    "SKYX-Turbo$@",
+    "KEYMASTER99$%!",
+    "UNLOCK@SKYMAX!",
+    "RedSecureKey2024!",
+    "XTRM-Access_12$",
+    "@SkyPower#88",
+    "SkyM4X-99!safe",
+    "AlphaKey-2025!!",
+    "Xpress!Lock#42",
+    "GammaGate$2025@",
+    "SKYZONE#X99@",
+    "Code-UNL0CK@25",
+    "VaultMaster!007",
+    "KryptonX@999!",
+    "SKYxForce#91",
+    "PowerKey#MAX@",
+    "LockStorm!88@",
+    "RedFlare$Access",
+    "Neon-Key2025!@",
+    "SecureX-Turbo@9",
+    "MasterKey@X-1",
+    "TITAN-GATE#25!",
+    "Access-Prime99@",
+    "RedGlitch@2025!",
+    "SKYLIGHT!KEY92",
+    "Cryptic#SKY2025",
+    "Unlock-Xtreme@1",
+    "SkyNova_#Key88",
+    "SKX-Gold!Acc99",
+    "LimitBreaker@72",
+    "DarkSky#777@",
+    "SkyRift-!Access",
+    "SecureFusion@01!",
+    "SKYCORE$999!@",
+    "SKYX-Shield_12",
+    "OmegaZone#KEY",
+    "SkyHack-X9!@",
+    "XKEYMAX!@24Z",
+    "FireWall99#X",
+    "KnightLock@X7",
+    "RedZone!Secure",
+    "SKYDROP-Key@1",
+    "AccessGRANT#99",
+    "VoltKey!XMAX",
+    "CloudGate#909",
+    "SkyElite_2025!",
+    "InfinitySky@77"
+  ];
+
+  function checkKey() {
+    const key = document.getElementById("keyInput").value.trim();
+    if (validKeys.includes(key)) {
+      alert("Access Granted!");
+      window.location.href = "home.html"; // Redirect to home.html
+    } else {
+      alert("Invalid Key. Try again.");
+    }
+  }
+</script>
+</body>
+</html>,

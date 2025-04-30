@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home - SKYMAX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #000;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .menu-button {
+      display: block;
+      width: 90%;
+      max-width: 350px;
+      margin: 20px auto;
+      padding: 70px 0;
+      font-size: 42px;
+      font-weight: bold;
+      color: red;
+      background-color: #000;
+      border: 2px solid red;
+      border-radius: 20px;
+      text-decoration: none;
+      box-shadow: 0 0 10px red, 0 0 10px red, 0 0 10px red;
+      transition: all 0.3s ease;
+    }
+
+    .menu-button:hover {
+      background-color: #200;
+      box-shadow: 0 0 25px red, 0 0 80px red;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-color: transparent;
+    }
+
+    canvas {
+      filter: drop-shadow(0 0 6px #ff2e2e);
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container">
+    <a class="menu-button" href="wingo.html">Wingo 1 Min</a>
+    <a class="menu-button" href="mines.html">Mines</a>
+    <a class="menu-button" href="https://tcvvip4.com/register?invite_code=3142A8130866" target="_blank">Register</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 100, "density": { "enable": true, "value_area": 800 }},
+        "color": { "value": "#ff2e2e" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 1, "random": false },
+        "size": { "value": 4, "random": true, "anim": { "enable": true, "speed": 4, "size_min": 1, "sync": false }},
+        "line_linked": { "enable": true, "distance": 130, "color": "#ff2e2e", "opacity": 0.6, "width": 1.4 },
+        "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": false }
+        },
+        "modes": {
+          "grab": { "distance": 140, "line_linked": { "opacity": 1 }}
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>
