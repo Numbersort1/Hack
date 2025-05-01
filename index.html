@@ -145,7 +145,7 @@
   <div class="border-wrapper">
     <div class="content-wrapper">
       <h1>SKYMAX</h1>
-      <img class="logo-image" src="https://assets.onecompiler.app/4337ujhn4/43g5uufzg/1000025554.jpg" alt="Logo" />
+      <img class="logo-image" src="file_00000000aac461f7a83cbb37e9a6584c.png" alt="Logo" />
       <p>Enter your valid key</p>
       <input type="password" id="keyInput" placeholder="Enter key" />
       <button onclick="checkKey()">ENTER</button>
@@ -196,69 +196,36 @@
     });
   </script>
 
-<script>
-  const validKeys = [
-    "SKYMAX#2025!@",
-    "Z3r0G0d-K3y!!",
-    "MAXKEY-92!x@Bz",
-    "SKYX-Turbo$@",
-    "KEYMASTER99$%!",
-    "UNLOCK@SKYMAX!",
-    "RedSecureKey2024!",
-    "XTRM-Access_12$",
-    "@SkyPower#88",
-    "SkyM4X-99!safe",
-    "AlphaKey-2025!!",
-    "Xpress!Lock#42",
-    "GammaGate$2025@",
-    "SKYZONE#X99@",
+  <script>
+    const validKeys = [
+      // 2 Keys for 24 Hours
+      "SKYZONE#X99@",
     "Code-UNL0CK@25",
-    "VaultMaster!007",
-    "KryptonX@999!",
-    "SKYxForce#91",
-    "PowerKey#MAX@",
-    "LockStorm!88@",
-    "RedFlare$Access",
-    "Neon-Key2025!@",
-    "SecureX-Turbo@9",
-    "MasterKey@X-1",
-    "TITAN-GATE#25!",
-    "Access-Prime99@",
-    "RedGlitch@2025!",
+    "VaultMaster!007,
+
+      // 2 Keys for 2 Days
+      "RedGlitch@2025!",
     "SKYLIGHT!KEY92",
     "Cryptic#SKY2025",
     "Unlock-Xtreme@1",
     "SkyNova_#Key88",
-    "SKX-Gold!Acc99",
-    "LimitBreaker@72",
-    "DarkSky#777@",
-    "SkyRift-!Access",
-    "SecureFusion@01!",
-    "SKYCORE$999!@",
-    "SKYX-Shield_12",
-    "OmegaZone#KEY",
-    "SkyHack-X9!@",
-    "XKEYMAX!@24Z",
-    "FireWall99#X",
-    "KnightLock@X7",
-    "RedZone!Secure",
-    "SKYDROP-Key@1",
-    "AccessGRANT#99",
-    "VoltKey!XMAX",
-    "CloudGate#909",
-    "SkyElite_2025!",
-    "InfinitySky@77"
-  ];
 
-  function checkKey() {
-    const key = document.getElementById("keyInput").value.trim();
-    if (validKeys.includes(key)) {
-      alert("Access Granted!");
-      window.location.href = "home.html"; // Redirect to home.html
-    } else {
-      alert("Invalid Key. Try again.");
+      // 2 Keys for 7 Days
+      "SKY#1"
+
+      // 1 Key for 1 Month
+      "SKYMONTH#1"
+    ];
+
+    function checkKey() {
+      const key = document.getElementById("keyInput").value.trim();
+      if (validKeys.includes(key)) {
+        alert("Access Granted!");
+        window.location.href = "home.html"; // You can replace this with your destination
+      } else {
+        alert("Invalid Key. Try again.");
+      }
     }
-  }
-</script>
+  </script>
 </body>
-</html>,
+</html>
