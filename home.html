@@ -22,22 +22,26 @@
       overflow: hidden;
     }
 
-    .container {
-      text-align: center;
-      width: 100%;
-      z-index: 1;
-    }
-
+  .container {
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column; /* Change from grid to column flexbox */
+  align-items: center; /* Center align buttons */
+  gap: 20px; /* Space between buttons */
+  padding-top: 120px;
+}
     .menu-button {
       display: block;
       width: 90%;
       max-width: 350px;
-      margin: 20px auto;
+      margin: 0 auto;
       padding: 70px 0;
       font-size: 42px;
       font-weight: bold;
       color: red;
-      background-color: #000;
+      background-color: transparent;
       border: 2px solid red;
       border-radius: 20px;
       text-decoration: none;
@@ -46,7 +50,7 @@
     }
 
     .menu-button:hover {
-      background-color: #200;
+      background-color: rgba(255, 0, 0, 0.1);
       box-shadow: 0 0 25px red, 0 0 80px red;
     }
 
@@ -61,10 +65,53 @@
     canvas {
       filter: drop-shadow(0 0 6px #ff2e2e);
     }
+
+    .countdown-container {
+      position: absolute;
+      top: 20px;
+      text-align: center;
+      z-index: 2;
+      font-size: 30px;
+      font-weight: bold;
+      color: #ff2e2e;
+      text-shadow: 0 0 8px red;
+      background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #ff2e2e;
+      width: 400px;
+      display: flex;
+      justify-content: space-between; /* Horizontally aligned */
+      align-items: center;
+    }
+
+    .time-box {
+      background-color: transparent;
+      padding: 15px 20px;
+      font-size: 40px;
+      color: #ff2e2e;
+      border: 2px solid #ff2e2e;
+      border-radius: 5px;
+      box-shadow: 0 0 10px red;
+    }
+
+    .countdown-inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
   <div id="particles-js"></div>
+
+  <div class="countdown-container" id="countdown">
+    <div class="time-box" id="days">00</div>
+    <div class="time-box" id="hours">00</div>
+    <div class="time-box" id="minutes">00</div>
+    <div class="time-box" id="seconds">00</div>
+  </div>
 
   <div class="container">
     <a class="menu-button" href="wingo.html">Wingo 1 Min</a>
@@ -96,6 +143,44 @@
       },
       "retina_detect": true
     });
+
+    // Countdown Script
+    const countdownElement = document.getElementById("countdown");
+    const validityPeriod = 7 * 24 * 60 * 60 * 1000; // Validity period in milliseconds (7 days)
+    
+    // Check if the start time is stored in localStorage
+    let startTime = localStorage.getItem("startTime");
+
+    if (!startTime) {
+      // If no start time, set it to the current time
+      startTime = new Date().getTime();
+      localStorage.setItem("startTime", startTime);
+    }
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const elapsedTime = now - startTime;
+      const remainingTime = validityPeriod - elapsedTime;
+
+      if (remainingTime <= 0) {
+        countdownElement.innerHTML = "Validity Ended";
+        return;
+      }
+
+      const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+      // Update the countdown box
+      document.getElementById("days").textContent = days < 10 ? `0${days}` : days;
+      document.getElementById("hours").textContent = hours < 10 ? `0${hours}` : hours;
+      document.getElementById("minutes").textContent = minutes < 10 ? `0${minutes}` : minutes;
+      document.getElementById("seconds").textContent = seconds < 10 ? `0${seconds}` : seconds;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
   </script>
 </body>
 </html>
