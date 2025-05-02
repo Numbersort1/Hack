@@ -167,7 +167,7 @@
     });
 
     const keyValidityMap = {
-      "SKY1DAY": 1* 86400000,
+      "SKY1DAY": 1 * 86400000,
       "Cojiw8uu": 1 * 86400000,
       "VaultMaste07": 1 * 86400000,
       "RedGlitc2025": 2 * 86400000,
@@ -182,9 +182,10 @@
     function checkKey() {
       const key = document.getElementById("keyInput").value.trim();
       const validity = keyValidityMap[key];
+      const startTime = localStorage.getItem("startTime");
+
       if (validity) {
-        const startTime = Date.now();
-        localStorage.setItem("startTime", startTime);
+        localStorage.setItem("startTime", Date.now());
         localStorage.setItem("validity", validity);
         alert("Access Granted!");
         window.location.href = "home.html";
@@ -192,6 +193,22 @@
         alert("Invalid Key. Try again.");
       }
     }
+
+    // Check if the key is still valid on page load
+    window.onload = function() {
+      const startTime = localStorage.getItem("startTime");
+      const keyValidity = localStorage.getItem("validity");
+
+      if (startTime && keyValidity) {
+        // If key is still valid, redirect to home page
+        if (Date.now() - startTime < keyValidity) {
+          window.location.href = "home.html";
+        } else {
+          // If key is expired, clear stored data and show login page
+          localStorage.clear();
+        }
+      }
+    };
   </script>
 </body>
-</html>no
+</html>
