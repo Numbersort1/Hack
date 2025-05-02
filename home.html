@@ -5,9 +5,7 @@
   <title>Home - SKYMAX</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
@@ -22,16 +20,17 @@
       overflow: hidden;
     }
 
-  .container {
-  text-align: center;
-  width: 100%;
-  z-index: 1;
-  display: flex;
-  flex-direction: column; /* Change from grid to column flexbox */
-  align-items: center; /* Center align buttons */
-  gap: 20px; /* Space between buttons */
-  padding-top: 120px;
-}
+    .container {
+      text-align: center;
+      width: 100%;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-top: 120px;
+    }
+
     .menu-button {
       display: block;
       width: 90%;
@@ -75,13 +74,13 @@
       font-weight: bold;
       color: #ff2e2e;
       text-shadow: 0 0 8px red;
-      background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
+      background-color: rgba(0, 0, 0, 0.5);
       padding: 20px;
       border-radius: 10px;
       border: 2px solid #ff2e2e;
       width: 400px;
       display: flex;
-      justify-content: space-between; /* Horizontally aligned */
+      justify-content: space-between;
       align-items: center;
     }
 
@@ -93,13 +92,6 @@
       border: 2px solid #ff2e2e;
       border-radius: 5px;
       box-shadow: 0 0 10px red;
-    }
-
-    .countdown-inner {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
     }
   </style>
 </head>
@@ -122,61 +114,52 @@
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
     particlesJS("particles-js", {
-      "particles": {
-        "number": { "value": 100, "density": { "enable": true, "value_area": 800 }},
-        "color": { "value": "#ff2e2e" },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 1, "random": false },
-        "size": { "value": 4, "random": true, "anim": { "enable": true, "speed": 4, "size_min": 1, "sync": false }},
-        "line_linked": { "enable": true, "distance": 130, "color": "#ff2e2e", "opacity": 0.6, "width": 1.4 },
-        "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+      particles: {
+        number: { value: 100, density: { enable: true, value_area: 800 }},
+        color: { value: "#ff2e2e" },
+        shape: { type: "circle" },
+        opacity: { value: 1 },
+        size: { value: 4, random: true, anim: { enable: true, speed: 4, size_min: 1, sync: false }},
+        line_linked: { enable: true, distance: 130, color: "#ff2e2e", opacity: 0.6, width: 1.4 },
+        move: { enable: true, speed: 2, random: true, out_mode: "out" }
       },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": { "enable": true, "mode": "grab" },
-          "onclick": { "enable": false }
-        },
-        "modes": {
-          "grab": { "distance": 140, "line_linked": { "opacity": 1 }}
-        }
+      interactivity: {
+        detect_on: "canvas",
+        events: { onhover: { enable: true, mode: "grab" }},
+        modes: { grab: { distance: 140, line_linked: { opacity: 1 }}}
       },
-      "retina_detect": true
+      retina_detect: true
     });
 
-    // Countdown Script
     const countdownElement = document.getElementById("countdown");
-    const validityPeriod = 1* 24 * 60 * 60 * 1000; // Validity period in milliseconds (7 days)
-    
-    // Check if the start time is stored in localStorage
-    let startTime = localStorage.getItem("startTime");
-
-    if (!startTime) {
-      // If no start time, set it to the current time
-      startTime = new Date().getTime();
-      localStorage.setItem("startTime", startTime);
-    }
+    const startTime = parseInt(localStorage.getItem("startTime")) || 0;
+    const validity = parseInt(localStorage.getItem("validity")) || 0;
 
     function updateCountdown() {
-      const now = new Date().getTime();
-      const elapsedTime = now - startTime;
-      const remainingTime = validityPeriod - elapsedTime;
+      const now = Date.now();
+      const remaining = (startTime + validity) - now;
 
-      if (remainingTime <= 0) {
+      if (remaining <= 0) {
         countdownElement.innerHTML = "Validity Ended";
+
+        document.querySelectorAll(".menu-button").forEach(btn => {
+          btn.style.pointerEvents = "none";
+          btn.style.opacity = "0.4";
+          btn.style.filter = "grayscale(100%)";
+          btn.textContent += " (Locked)";
+        });
         return;
       }
 
-      const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+      const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
-      // Update the countdown box
-      document.getElementById("days").textContent = days < 10 ? `0${days}` : days;
-      document.getElementById("hours").textContent = hours < 10 ? `0${hours}` : hours;
-      document.getElementById("minutes").textContent = minutes < 10 ? `0${minutes}` : minutes;
-      document.getElementById("seconds").textContent = seconds < 10 ? `0${seconds}` : seconds;
+      document.getElementById("days").textContent = days.toString().padStart(2, '0');
+      document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
+      document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
+      document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
     }
 
     setInterval(updateCountdown, 1000);
