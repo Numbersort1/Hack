@@ -1,17 +1,137 @@
-<!doctype html>
-<html>
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-      <div>
-        coming soon...
-coming soon...
-coming soon...
-coming soon...
-coming soon...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MINES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; }
 
-      </div>
-    </body>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: red;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-color: transparent;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      text-shadow: 0 0 10px red, 0 0 25px red;
+      z-index: 1;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-template-rows: repeat(5, 60px);
+      gap: 10px;
+      margin: 30px 0;
+      z-index: 1;
+    }
+
+    .box {
+      width: 60px;
+      height: 60px;
+      background-color: #111;
+      border: 2px solid red;
+      border-radius: 8px;
+      cursor: pointer;
+      perspective: 600px;
+      transition: transform 0.6s;
+    }
+
+    .flipped {
+      background-color: red !important;
+      box-shadow: 0 0 10px red, inset 0 0 10px red;
+      transform: rotateY(180deg);
+    }
+
+    button {
+      padding: 14px 30px;
+      font-size: 18px;
+      background-color: red;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1;
+      box-shadow: 0 0 15px red;
+    }
+
+    button:hover {
+      background-color: #ff1a1a;
+      box-shadow: 0 0 30px red;
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <h1>MINES</h1>
+  <div class="grid" id="grid"></div>
+  <button onclick="startPrediction()">START</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 100, density: { enable: true, value_area: 800 }},
+        color: { value: "#ff2e2e" },
+        shape: { type: "circle" },
+        opacity: { value: 1 },
+        size: { value: 4, random: true, anim: { enable: true, speed: 4, size_min: 1, sync: false }},
+        line_linked: { enable: true, distance: 130, color: "#ff2e2e", opacity: 0.6, width: 1.4 },
+        move: { enable: true, speed: 2, random: true, out_mode: "out" }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: { onhover: { enable: true, mode: "grab" }},
+        modes: { grab: { distance: 140, line_linked: { opacity: 1 }}}
+      },
+      retina_detect: true
+    });
+
+    const grid = document.getElementById('grid');
+
+    for (let i = 0; i < 25; i++) {
+      const box = document.createElement('div');
+      box.className = 'box';
+      grid.appendChild(box);
+    }
+
+    function startPrediction() {
+      // Clear all previous
+      document.querySelectorAll('.box').forEach(box => box.classList.remove('flipped'));
+
+      // Flip 2 to 8 random boxes
+      const boxes = Array.from(document.querySelectorAll('.box'));
+      const count = Math.floor(Math.random() * 7) + 2; // 2 to 8
+      const selected = [];
+
+      while (selected.length < count) {
+        const rand = Math.floor(Math.random() * 25);
+        if (!selected.includes(rand)) selected.push(rand);
+      }
+
+      selected.forEach(index => boxes[index].classList.add('flipped'));
+    }
+  </script>
+</body>
 </html>
