@@ -167,10 +167,10 @@
     });
 
     const keyValidityMap = {
-      "SKYMAX1DAY": 1* 86400000,
-      "SKYMAX@5#:" 1 * 86400000,
-      "SKYMAXX27S": 1 * 86400000,
-      "SKYMAX37SKS": 2 * 86400000,
+      "SKY1DAY": 1* 86400000,
+      "Cojiw8uu": 1 * 86400000,
+      "VaultMaste07": 1 * 86400000,
+      "RedGlitc2025": 2 * 86400000,
       "SKYLIGHT!KEY92": 2 * 86400000,
       "Cryptic#SKY2025": 2 * 86400000,
       "Unlock-Xtreme@1": 2 * 86400000,
@@ -180,23 +180,18 @@
     };
 
     function checkKey() {
-  const key = document.getElementById("keyInput").value.trim();
-  const validity = keyValidityMap[key];
-
-  // Debug logs to help in GitHub Pages
-  console.log("Entered Key:", key);
-  console.log("Matched Validity:", validity);
-
-  if (validity) {
-    const startTime = Date.now();
-    localStorage.setItem("startTime", startTime);
-    localStorage.setItem("validity", validity);
-    alert("Access Granted!");
-    window.location.href = "home.html";
-  } else {
-    alert("Invalid Key. Try again.");
-  }
+      const key = document.getElementById("keyInput").value.trim();
+      const validity = keyValidityMap[key];
+      if (validity) {
+        const startTime = Date.now();
+        localStorage.setItem("startTime", startTime);
+        localStorage.setItem("validity", validity);
+        alert("Access Granted!");
+        window.location.href = "home.html";
+      } else {
+        alert("Invalid Key. Try again.");
+      }
     }
-</script>
+  </script>
 </body>
 </html>
