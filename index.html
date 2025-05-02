@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="https://assets.onecompiler.app/4337ujhn4/43g5uufzg/1000025554.jpg" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -130,18 +128,13 @@
     }
 
     @keyframes pulseGlow {
-      0% {
-        box-shadow: 0 0 15px red, 0 0 30px red;
-      }
-      100% {
-        box-shadow: 0 0 30px red, 0 0 60px red;
-      }
+      0% { box-shadow: 0 0 15px red, 0 0 30px red; }
+      100% { box-shadow: 0 0 30px red, 0 0 60px red; }
     }
   </style>
 </head>
 <body>
   <div id="particles-js"></div>
-
   <div class="border-wrapper">
     <div class="content-wrapper">
       <h1>SKYMAX</h1>
@@ -156,72 +149,45 @@
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
     particlesJS("particles-js", {
-      "particles": {
-        "number": { "value": 100, "density": { "enable": true, "value_area": 800 }},
-        "color": { "value": "#ff2e2e" },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 1 },
-        "size": {
-          "value": 4,
-          "random": true,
-          "anim": { "enable": true, "speed": 4, "size_min": 1, "sync": false }
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 130,
-          "color": "#ff2e2e",
-          "opacity": 0.6,
-          "width": 1.4
-        },
-        "move": {
-          "enable": true,
-          "speed": 2,
-          "random": true,
-          "out_mode": "out"
-        }
+      particles: {
+        number: { value: 100, density: { enable: true, value_area: 800 }},
+        color: { value: "#ff2e2e" },
+        shape: { type: "circle" },
+        opacity: { value: 1 },
+        size: { value: 4, random: true, anim: { enable: true, speed: 4, size_min: 1, sync: false }},
+        line_linked: { enable: true, distance: 130, color: "#ff2e2e", opacity: 0.6, width: 1.4 },
+        move: { enable: true, speed: 2, random: true, out_mode: "out" }
       },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": { "enable": true, "mode": "grab" }
-        },
-        "modes": {
-          "grab": {
-            "distance": 140,
-            "line_linked": { "opacity": 1 }
-          }
-        }
+      interactivity: {
+        detect_on: "canvas",
+        events: { onhover: { enable: true, mode: "grab" }},
+        modes: { grab: { distance: 140, line_linked: { opacity: 1 }}}
       },
-      "retina_detect": true
+      retina_detect: true
     });
-  </script>
 
-  <script>
-    const validKeys = [
-  // 2 Keys for 24 Hours
-  "SKYZONE#X99@",
-  "Code-UNL0CK@25",
-  "VaultMaster!007",
-
-  // 2 Keys for 2 Days
-  "RedGlitch@2025!",
-  "SKYLIGHT!KEY92",
-  "Cryptic#SKY2025",
-  "Unlock-Xtreme@1",
-  "SkyNova_#Key88",
-
-  // 2 Keys for 7 Days
-  "SKY#1",
-
-  // 1 Key for 1 Month
-  "SKYMONTH#1"
-];
+    const keyValidityMap = {
+      "SKY1": 1* 80,
+      "Cojsiw83uu+#": 1 * 86400000,
+      "VaultMaster!007": 1 * 86400000,
+      "RedGlitch@2025!": 2 * 86400000,
+      "SKYLIGHT!KEY92": 2 * 86400000,
+      "Cryptic#SKY2025": 2 * 86400000,
+      "Unlock-Xtreme@1": 2 * 86400000,
+      "SkyNova_#Key88": 2 * 86400000,
+      "SKY#1": 8 * 86400000,
+      "SKYMONTH#1": 30 * 86400000
+    };
 
     function checkKey() {
       const key = document.getElementById("keyInput").value.trim();
-      if (validKeys.includes(key)) {
+      const validity = keyValidityMap[key];
+      if (validity) {
+        const startTime = Date.now();
+        localStorage.setItem("startTime", startTime);
+        localStorage.setItem("validity", validity);
         alert("Access Granted!");
-        window.location.href = "home.html"; // You can replace this with your destination
+        window.location.href = "home.html";
       } else {
         alert("Invalid Key. Try again.");
       }
