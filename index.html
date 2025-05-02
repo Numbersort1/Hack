@@ -180,18 +180,23 @@
     };
 
     function checkKey() {
-      const key = document.getElementById("keyInput").value.trim();
-      const validity = keyValidityMap[key];
-      if (validity) {
-        const startTime = Date.now();
-        localStorage.setItem("startTime", startTime);
-        localStorage.setItem("validity", validity);
-        alert("Access Granted!");
-        window.location.href = "home.html";
-      } else {
-        alert("Invalid Key. Try again.");
-      }
+  const key = document.getElementById("keyInput").value.trim();
+  const validity = keyValidityMap[key];
+
+  // Debug logs to help in GitHub Pages
+  console.log("Entered Key:", key);
+  console.log("Matched Validity:", validity);
+
+  if (validity) {
+    const startTime = Date.now();
+    localStorage.setItem("startTime", startTime);
+    localStorage.setItem("validity", validity);
+    alert("Access Granted!");
+    window.location.href = "home.html";
+  } else {
+    alert("Invalid Key. Try again.");
+  }
     }
-  </script>
+</script>
 </body>
 </html>
