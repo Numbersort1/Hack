@@ -32,7 +32,7 @@
     }
 
     .period {
-      margin-top: 20px;
+      margin-top: 30px;
       border: 2px solid red;
       border-radius: 20px;
       padding: 20px 55px;
@@ -74,7 +74,7 @@
     }
 
     .prediction {
-      font-size: 32px;
+      font-size: 40px;
       font-weight: bold;
       margin: 20px 0;
       text-shadow: 0 0 15px red;
@@ -179,49 +179,110 @@
     });
   </script>
 
-<script>
-  const predictionOptions = ["BIGG 1/3", "BIGG 2/4", "SMALL 6/8", "SMALL 7/9"];
-  let lastPeriod = '';
-  let predictionHistory = [];
+<style>
+  #prediction {
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 10px;
+    text-shadow: 0 0 8px rgba(0,0,0,0.4);
+  }
+  .biggg { color: limegreen; animation: pulse 1s infinite alternate; }
+  .small { color: crimson; animation: pulse 1s infinite alternate; }
 
-  function formatPeriod(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const startOfDay = new Date(year, date.getMonth(), date.getDate(), 0, -1, 0);
-    const diffMinutes = Math.floor((date - startOfDay) / 60000);
-    const minutesFormatted = String(diffMinutes).padStart(4, '0');
-    return `${year}${month}${day}${minutesFormatted}`;
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.1); opacity: 1; }
   }
 
-  function getAiPrediction(periodNumber) {
-    const seed = parseInt(periodNumber.slice(-4));
-    const hash = seed % predictionOptions.length;
-    const randomOffset = Math.floor(Math.random() * predictionOptions.length);
-    const index = (hash + randomOffset) % predictionOptions.length;
-    const selected = predictionOptions[index];
-    predictionHistory.push(selected);
-    return selected;
+  #skipMsg { color: orange; font-style: italic; margin-top: 5px; }
+</style>
+<style>
+  #prediction {
+    font-size: 35px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: red;
+    text-shadow: 0 0 8px rgba(0,0,0,0.4);
+    animation: pulse 1s infinite alternate;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.1); opacity: 1; }
+  }
+
+  #skipMsg { color: orange; font-style: italic; margin-top: 5px; }
+</style>
+
+<script>
+  const predictionOptions = ["BIGGG 2/4", "BIGGG 1/3", "SMALL 7/9", "SMALL 6/8"];
+  let lastPeriod = '';
+
+  function formatPeriod(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
+    const mins = Math.floor((date - sod) / 60000);
+    return `${y}${m}${d}${String(mins).padStart(4, '0')}`;
+  }
+
+  function multiHash(str, times = 3) {
+    let hash = 0;
+    for (let t = 0; t < times; t++) {
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i) + t;
+        hash |= 0;
+      }
+    }
+    return Math.abs(hash);
+  }
+
+  function getSmartPrediction(period) {
+    const baseHash = multiHash(period, 3);
+    const noise = multiHash(period.slice(4) + "xyz", 2) % 100;
+    const bias = (parseInt(period.slice(-2)) + noise) % 4;
+
+    const weightMap = {
+      0: [0, 1, 2, 3],
+      1: [1, 2, 3, 0],
+      2: [2, 3, 0, 1],
+      3: [3, 0, 1, 2],
+    };
+
+    const pick = weightMap[bias][baseHash % 4];
+    return predictionOptions[pick];
+  }
+
+  function animatePrediction(text) {
+    const target = document.getElementById('prediction');
+    target.textContent = '';
+    let i = 0;
+    const interval = setInterval(() => {
+      target.textContent += text[i];
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, 50);
   }
 
   function updatePeriod() {
     const now = new Date();
-    const periodText = formatPeriod(now);
-    document.getElementById('period').textContent = `Period: ${periodText}`;
+    const period = formatPeriod(now);
+    document.getElementById('period').textContent = `Period: ${period}`;
 
-    if (periodText !== lastPeriod) {
+    if (period !== lastPeriod) {
       document.getElementById('startBtn').disabled = false;
-      document.getElementById('skipMsg').textContent = 'Ready✅.Start  ';
-      document.getElementById('prediction').textContent = ''; // Clear old prediction
+      document.getElementById('prediction').textContent = '';
+      document.getElementById('skipMsg').textContent = 'Ready✅. Start';
     }
 
-    lastPeriod = periodText;
+    lastPeriod = period;
   }
 
   document.getElementById('startBtn').addEventListener('click', () => {
-    const periodNumber = document.getElementById('period').textContent.replace("Period: ", "");
-    const aiPrediction = getAiPrediction(periodNumber);
-    document.getElementById('prediction').textContent = aiPrediction;
+    const period = document.getElementById('period').textContent.replace("Period: ", "");
+    const result = getSmartPrediction(period);
+    animatePrediction(result);
     document.getElementById('startBtn').disabled = true;
     document.getElementById('skipMsg').textContent = '';
   });
