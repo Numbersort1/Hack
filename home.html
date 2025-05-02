@@ -132,12 +132,18 @@
     });
 
     const countdownElement = document.getElementById("countdown");
-    const startTime = parseInt(localStorage.getItem("startTime")) || 0;
-    const validity = parseInt(localStorage.getItem("validity")) || 0;
+    const startTime = localStorage.getItem("startTime");
+const validity = localStorage.getItem("validity");
+
+if (!startTime || !validity) {
+  // No valid session found — redirect back to login
+  alert("Access Denied: Invalid or expired session.");
+  window.location.href = "index.html";
+}
 
     function updateCountdown() {
       const now = Date.now();
-      const remaining = (startTime + validity) - now;
+      const remaining = (parseInt(startTime) + parseInt(validity)) - Date.now();
 
       if (remaining <= 0) {
         countdownElement.innerHTML = "Validity Ended";
