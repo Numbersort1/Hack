@@ -177,117 +177,117 @@
       },
       "retina_detect": true
     });
-  </script>
 
-<style>
-  #prediction {
-    font-size: 12px;
-    font-weight: bold;
-    margin-top: 10px;
-    text-shadow: 0 0 8px rgba(0,0,0,0.4);
-  }
-  .biggg { color: limegreen; animation: pulse 1s infinite alternate; }
-  .small { color: crimson; animation: pulse 1s infinite alternate; }
+    // Define prediction options
+    const predictionOptions = ["BIGGG 2/4", "BIGGG 1/3", "SMALL 7/9", "SMALL 6/8"];
+    
+    // New prediction method for more randomness and unpredictability
+    function getAdvancedPrediction(period) {
+      const chars = period.split('').map(c => c.charCodeAt(0));
+      const sum = chars.reduce((a, b) => a + b, 0);
+      const pattern = sum % 6;  // Increased unpredictability by expanding to 6 options
 
-  @keyframes pulse {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.1); opacity: 1; }
-  }
+      const altMap = {
+        0: "SMALL 6/8",
+        1: "BIGGG 1/3",
+        2: "SMALL 7/9",
+        3: "BIGGG 2/4",
+        4: "BIGGG 1/3",
+        5: "SMALL 7/9"
+      };
 
-  #skipMsg { color: orange; font-style: italic; margin-top: 5px; }
-</style>
-<style>
-  #prediction {
-    font-size: 35px;
-    font-weight: bold;
-    margin-top: 10px;
-    color: red;
-    text-shadow: 0 0 8px rgba(0,0,0,0.4);
-    animation: pulse 1s infinite alternate;
-  }
+      return altMap[pattern];
+    }
 
-  @keyframes pulse {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.1); opacity: 1; }
-  }
+    // Add a random delay before showing the prediction
+    function delayPrediction() {
+      const delayTime = Math.floor(Math.random() * 2000) + 1000; // Random delay between 1 and 3 seconds
+      return new Promise(resolve => setTimeout(resolve, delayTime));
+    }
 
-  #skipMsg { color: orange; font-style: italic; margin-top: 5px; }
-</style>
+    // Smart Prediction function with more unpredictability
+    function getSmartPrediction(period) {
+      const baseHash = multiHash(period, 3);
+      const noise = multiHash(period.slice(4) + "xyz", 2) % 100;
+      const bias = (parseInt(period.slice(-2)) + noise) % 6;  // Increase the unpredictability with a broader range
 
-<script>
-  const predictionOptions = ["BIGGG 2/4", "BIGGG 1/3", "SMALL 7/9", "SMALL 6/8"];
-  let lastPeriod = '';
+      const weightMap = {
+        0: [0, 1, 2, 3, 4, 5],
+        1: [1, 2, 3, 4, 5, 0],
+        2: [2, 3, 4, 5, 0, 1],
+        3: [3, 4, 5, 0, 1, 2],
+        4: [4, 5, 0, 1, 2, 3],
+        5: [5, 0, 1, 2, 3, 4]
+      };
 
-  function formatPeriod(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
-    const mins = Math.floor((date - sod) / 60000);
-    return `${y}${m}${d}${String(mins).padStart(4, '0')}`;
-  }
+      const pick = weightMap[bias][baseHash % 6];  // Adjust to 6 options
+      return predictionOptions[pick];
+    }
 
-  function multiHash(str, times = 3) {
-    let hash = 0;
-    for (let t = 0; t < times; t++) {
-      for (let i = 0; i < str.length; i++) {
-        hash = (hash << 5) - hash + str.charCodeAt(i) + t;
-        hash |= 0;
+    // Helper function for hashing
+    function multiHash(str, times = 3) {
+      let hash = 0;
+      for (let t = 0; t < times; t++) {
+        for (let i = 0; i < str.length; i++) {
+          hash = (hash << 5) - hash + str.charCodeAt(i) + t;
+          hash |= 0;
+        }
       }
-    }
-    return Math.abs(hash);
-  }
-
-  function getSmartPrediction(period) {
-    const baseHash = multiHash(period, 3);
-    const noise = multiHash(period.slice(4) + "xyz", 2) % 100;
-    const bias = (parseInt(period.slice(-2)) + noise) % 4;
-
-    const weightMap = {
-      0: [0, 1, 2, 3],
-      1: [1, 2, 3, 0],
-      2: [2, 3, 0, 1],
-      3: [3, 0, 1, 2],
-    };
-
-    const pick = weightMap[bias][baseHash % 4];
-    return predictionOptions[pick];
-  }
-
-  function animatePrediction(text) {
-    const target = document.getElementById('prediction');
-    target.textContent = '';
-    let i = 0;
-    const interval = setInterval(() => {
-      target.textContent += text[i];
-      i++;
-      if (i >= text.length) clearInterval(interval);
-    }, 50);
-  }
-
-  function updatePeriod() {
-    const now = new Date();
-    const period = formatPeriod(now);
-    document.getElementById('period').textContent = `Period: ${period}`;
-
-    if (period !== lastPeriod) {
-      document.getElementById('startBtn').disabled = false;
-      document.getElementById('prediction').textContent = '';
-      document.getElementById('skipMsg').textContent = 'Ready✅. Start';
+      return Math.abs(hash);
     }
 
-    lastPeriod = period;
-  }
+    // Format the period number based on the current time
+    function formatPeriod(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
+      const mins = Math.floor((date - sod) / 60000);
+      return `${y}${m}${d}${String(mins).padStart(4, '0')}`;
+    }
 
-  document.getElementById('startBtn').addEventListener('click', () => {
-    const period = document.getElementById('period').textContent.replace("Period: ", "");
-    const result = getSmartPrediction(period);
-    animatePrediction(result);
-    document.getElementById('startBtn').disabled = true;
-    document.getElementById('skipMsg').textContent = '';
-  });
+    // Update the period number on screen
+    function updatePeriod() {
+      const now = new Date();
+      const period = formatPeriod(now);
+      document.getElementById('period').textContent = `Period: ${period}`;
 
-  setInterval(updatePeriod, 1000);
-</script>
+      if (period !== lastPeriod) {
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('prediction').textContent = '';
+        document.getElementById('skipMsg').textContent = 'Ready✅. Start';
+      }
+
+      lastPeriod = period;
+    }
+
+    // Animation for prediction text
+    function animatePrediction(text) {
+      const target = document.getElementById('prediction');
+      target.textContent = '';
+      let i = 0;
+      const interval = setInterval(() => {
+        target.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 50);
+    }
+
+    let lastPeriod = '';
+
+    // Button to start the prediction
+    document.getElementById('startBtn').addEventListener('click', async () => {
+      const period = document.getElementById('period').textContent.replace("Period: ", "");
+      const useAlt = parseInt(period.slice(-1)) % 2 === 0; // Alternate between prediction methods
+      await delayPrediction();  // Add random delay before prediction
+      const result = useAlt ? getSmartPrediction(period) : getAdvancedPrediction(period);
+      animatePrediction(result);
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('skipMsg').textContent = '';
+    });
+
+    // Period update every second
+    setInterval(updatePeriod, 1000);
+  </script>
 </body>
 </html>
