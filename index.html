@@ -166,49 +166,60 @@
       retina_detect: true
     });
 
-    const keyValidityMap = {
-      "SKY6hr": 1 * 8940000,
-      "Cojiw8uu": 1 * 21600000,
-      "VaultMaste07": 1 * 86400000,
-      "RedGlitc2025": 2 * 86400000,
-      "SKYLIGHT!KEY92": 2 * 86400000,
-      "Cryptic#SKY2025": 2 * 86400000,
-      "Unlock-Xtreme@1": 2 * 86400000,
-      "SkyNova_#Key88": 2 * 86400000,
-      "SKY#1": 8 * 86400000,
-      "SKYMONTH#1": 30 * 86400000
-    };
+  
+  const keyValidityMap = {
+    "SKY6hr": 1 * 8940000,
+    "Cojiw8uu": 1 * 21600000,
+    "VaultMaste07": 1 * 86400000,
+    "RedGlitc2025": 2 * 86400000,
+    "SKYLIGHT!KEY92": 2 * 86400000,
+    "Cryptic#SKY2025": 2 * 86400000,
+    "Unlock-Xtreme@1": 2 * 86400000,
+    "SkyNova_#Key88": 2 * 86400000,
+    "SKY#1": 8 * 86400000,
+    "SKYMONTH#1": 30 * 86400000
+  };
 
-    function checkKey() {
-      const key = document.getElementById("keyInput").value.trim();
-      const validity = keyValidityMap[key];
-      const startTime = localStorage.getItem("startTime");
+  function checkKey() {
+    const key = document.getElementById("keyInput").value.trim();
+    const usedKeys = JSON.parse(localStorage.getItem("usedKeys") || "{}");
 
-      if (validity) {
-        localStorage.setItem("startTime", Date.now());
-        localStorage.setItem("validity", validity);
-        alert("Access Granted!");
-        window.location.href = "home.html";
-      } else {
-        alert("Invalid Key. Try again.");
-      }
+    if (usedKeys[key]) {
+      alert("This key has already been used on this device.");
+      return;
     }
 
-    // Check if the key is still valid on page load
-    window.onload = function() {
-      const startTime = localStorage.getItem("startTime");
-      const keyValidity = localStorage.getItem("validity");
+    const validity = keyValidityMap[key];
+    if (validity) {
+      const now = Date.now();
+      localStorage.setItem("activeKey", key);
+      localStorage.setItem("startTime", now.toString());
+      localStorage.setItem("validity", validity.toString());
 
-      if (startTime && keyValidity) {
-        // If key is still valid, redirect to home page
-        if (Date.now() - startTime < keyValidity) {
-          window.location.href = "home.html";
-        } else {
-          // If key is expired, clear stored data and show login page
-          localStorage.clear();
-        }
+      usedKeys[key] = true;
+      localStorage.setItem("usedKeys", JSON.stringify(usedKeys));
+
+      alert("Access Granted!");
+      window.location.href = "home.html";
+    } else {
+      alert("Invalid Key. Try again.");
+    }
+  }
+
+  window.onload = function() {
+    const key = localStorage.getItem("activeKey");
+    const startTime = parseInt(localStorage.getItem("startTime"));
+    const validity = parseInt(localStorage.getItem("validity"));
+
+    if (key && startTime && validity) {
+      const now = Date.now();
+      if (now - startTime < validity) {
+        window.location.href = "home.html";
+      } else {
+        localStorage.clear();
       }
-    };
-  </script>
+    }
+  };
+</script>
 </body>
 </html>
