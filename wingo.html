@@ -177,103 +177,70 @@
       },
       "retina_detect": true
     });
-    
-  </script>
-  <!-- Only the JavaScript part is shown below for brevity -->
-<script>
-  // Removed delay function
-  // Removed multiHash extra iterations
-  function multiHash(str, times = 2) {
-    let hash = 0;
-    for (let t = 0; t < times; t++) {
-      for (let i = 0; i < str.length; i++) {
-        hash = (hash << 5) - hash + str.charCodeAt(i) + t;
-        hash |= 0;
+
+    // Helper function for multiHash
+    function multiHash(str, times = 2) {
+      let hash = 0;
+      for (let t = 0; t < times; t++) {
+        for (let i = 0; i < str.length; i++) {
+          hash = (hash << 5) - hash + str.charCodeAt(i) + t;
+          hash |= 0;
+        }
       }
-    }
-    return Math.abs(hash);
-  }
-
-  function getAdvancedPrediction(period) {
-    const chars = period.split('').map(c => c.charCodeAt(0));
-    const sum = chars.reduce((a, b) => a + b, 0);
-    const pattern = sum % 6;
-    const altMap = {
-      0: "SMALL 6/8",
-      1: "BIGGG 1/3",
-      2: "SMALL 7/9",
-      3: "BIGGG 2/4",
-      4: "BIGGG 1/3",
-      5: "SMALL 7/9"
-    };
-    return altMap[pattern];
-  }
-
-  function getSmartPrediction(period) {
-    const baseHash = multiHash(period, 2);
-    const noise = multiHash(period.slice(4) + "xyz", 1) % 100;
-    const bias = (parseInt(period.slice(-2)) + noise) % 6;
-    const weightMap = {
-      0: [0, 1, 2, 3, 4, 5],
-      1: [1, 2, 3, 4, 5, 0],
-      2: [2, 3, 4, 5, 0, 1],
-      3: [3, 4, 5, 0, 1, 2],
-      4: [4, 5, 0, 1, 2, 3],
-      5: [5, 0, 1, 2, 3, 4]
-    };
-    const pick = weightMap[bias][baseHash % 6];
-    return predictionOptions[pick];
-  }
-
-  function animatePrediction(text) {
-    const target = document.getElementById('prediction');
-    target.textContent = '';
-    let i = 0;
-    const interval = setInterval(() => {
-      target.textContent += text[i];
-      i++;
-      if (i >= text.length) clearInterval(interval);
-    }, 50);
-  }
-
-  function formatPeriod(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
-    const mins = Math.floor((date - sod) / 60000);
-    return `${y}${m}${d}${String(mins).padStart(4, '0')}`;
-  }
-
-  function updatePeriod() {
-    const now = new Date();
-    const period = formatPeriod(now);
-    document.getElementById('period').textContent = `Period: ${period}`;
-
-    if (period !== lastPeriod) {
-      document.getElementById('startBtn').disabled = false;
-      document.getElementById('prediction').textContent = '';
-      document.getElementById('skipMsg').textContent = 'Ready✅. Start';
+      return Math.abs(hash);
     }
 
-    lastPeriod = period;
-    requestAnimationFrame(updatePeriod); // smoother update
-  }
+    // 20 Logic Method to generate BIGG/SMALL prediction
+    function getPredictionType(period) {
+      // Generate the base hash using the period number
+      const baseHash = multiHash(period, 20); // Use the 20 logic method for multi-hashing
 
-  let lastPeriod = '';
-  const predictionOptions = ["BIGGG 2/4", "BIGGG 1/3", "SMALL 7/9", "SMALL 6/8"];
+      // Extract the last digit to determine BIGG or SMALL
+      const number = baseHash % 10;  // Get the last digit of the hash to use as a number
+      const type = number < 5 ? "SMALL" : "BIGG";  // Numbers 0-4 are SMALL, 5-9 are BIGG
+      return `${type} ${number}`;  // Return the prediction as BIGG/SMALL with the number
+    }
 
-  document.getElementById('startBtn').addEventListener('click', () => {
-    const period = document.getElementById('period').textContent.replace("Period: ", "");
-    const useAlt = parseInt(period.slice(-1)) % 2 === 0;
-    const result = useAlt ? getSmartPrediction(period) : getAdvancedPrediction(period);
-    animatePrediction(result);
-    document.getElementById('startBtn').disabled = true;
-    document.getElementById('skipMsg').textContent = '';
-  });
+    // Updates the period in the UI
+    function formatPeriod(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
+      const mins = Math.floor((date - sod) / 60000);
+      return `${y}${m}${d}${String(mins).padStart(4, '0')}`;
+    }
 
-  requestAnimationFrame(updatePeriod); // start the loop
-</script>
+    // Update the period every frame
+    function updatePeriod() {
+      const now = new Date();
+      const period = formatPeriod(now);
+      document.getElementById('period').textContent = `Period: ${period}`;
+
+      if (period !== lastPeriod) {
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('prediction').textContent = '';
+        document.getElementById('skipMsg').textContent = 'Ready✅. Start';
+      }
+
+      lastPeriod = period;
+      requestAnimationFrame(updatePeriod); // smoother update
+    }
+
+    let lastPeriod = '';
+    
+    // Event listener for the START button
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const period = document.getElementById('period').textContent.replace("Period: ", "");
+      const prediction = getPredictionType(period); // Get prediction with 20 logic method
+      document.getElementById('prediction').textContent = prediction;
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('skipMsg').textContent = '';
+    });
+
+    // Initialize the loop to update the period
+    requestAnimationFrame(updatePeriod);
+  </script>
 
 </body>
 </html>
