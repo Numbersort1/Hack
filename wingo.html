@@ -192,15 +192,14 @@ function multiHash(input, rounds) {
 }
     // 20 Logic Method to generate BIGG/SMALL prediction
     function getPredictionType(period) {
-      // Generate the base hash using the period number
-      const baseHash = multiHash(period, 20); // Use the 20 logic method for multi-hashing
+  const baseHash = multiHash(period, 20);
+  const number = baseHash % 10;
 
-      // Extract the last digit to determine BIGG or SMALL
-      const number = baseHash % 10;  // Get the last digit of the hash to use as a number
-      const type = number < 5 ? "SMALL" : "BIGG";  // Numbers 0-4 are SMALL, 5-9 are BIGG
-      return `${type} ${number}`;  // Return the prediction as BIGG/SMALL with the number
-    }
+  const type = number < 5 ? "SMALL" : "BIGG";
+  const above = number >= 5 ? number - 5 : number + 5;
 
+  return `${type} ${number}/${above}`;
+}
     // Updates the period in the UI
     function formatPeriod(date) {
       const y = date.getFullYear();
