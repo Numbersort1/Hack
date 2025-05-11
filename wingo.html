@@ -178,27 +178,45 @@
       "retina_detect": true
     });
 
-// Multi-hash function to simulate 20 logic layers
-function multiHash(input, rounds) {
-  let hash = 0;
-  for (let i = 0; i < rounds; i++) {
-    for (let j = 0; j < input.length; j++) {
-      const char = input.charCodeAt(j);
-      hash = (hash * 31 + char + i * 17) % 1000000007;
-    }
-    input = hash.toString();
+function getPredictionType(period) {
+  const outcomes = [
+    { label: "BIGG 2/4", weight: 3 },
+    { label: "BIGG 1/3", weight: 2 },
+    { label: "SMALL 6/8", weight: 2 },
+    { label: "SMALL 7/9", weight: 3 }
+  ];
+
+  // Advanced multi-stage hash
+  let seed = 0;
+  for (let i = 0; i < period.length; i++) {
+    const char = period.charCodeAt(i);
+    seed = (seed * 37 + char + i * 13) % 99991;
   }
-  return hash;
-}
-    // 20 Logic Method to generate BIGG/SMALL prediction
-    function getPredictionType(period) {
-  const baseHash = multiHash(period, 20);
-  const number = baseHash % 10;
 
-  const type = number < 5 ? "SMALL" : "BIGG";
-  const above = number >= 5 ? number - 5 : number + 5;
+  // Add pseudo-random complexity
+  const complexityLayer = ((seed * 17) ^ (seed >> 3)) % 1000;
 
-  return `${type} ${number}/${above}`;
+  // Modify weights based on period characteristics
+  const minute = parseInt(period.slice(-2)); // Last 2 digits of period (minute)
+  const isEven = minute % 2 === 0;
+
+  const dynamicWeights = outcomes.map((item, idx) => {
+    let modifier = item.weight;
+    if (isEven && item.label.includes("BIGG")) modifier += 1;
+    if (!isEven && item.label.includes("SMALL")) modifier += 1;
+    return { label: item.label, weight: modifier };
+  });
+
+  // Weighted selection
+  const totalWeight = dynamicWeights.reduce((sum, o) => sum + o.weight, 0);
+  let rand = complexityLayer % totalWeight;
+
+  for (let i = 0; i < dynamicWeights.length; i++) {
+    rand -= dynamicWeights[i].weight;
+    if (rand < 0) return dynamicWeights[i].label;
+  }
+
+  return dynamicWeights[0].label;
 }
     // Updates the period in the UI
     function formatPeriod(date) {
