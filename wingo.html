@@ -178,18 +178,18 @@
       "retina_detect": true
     });
 
-    // Helper function for multiHash
-    function multiHash(str, times = 2) {
-      let hash = 0;
-      for (let t = 0; t < times; t++) {
-        for (let i = 0; i < str.length; i++) {
-          hash = (hash << 5) - hash + str.charCodeAt(i) + t;
-          hash |= 0;
-        }
-      }
-      return Math.abs(hash);
+// Multi-hash function to simulate 20 logic layers
+function multiHash(input, rounds) {
+  let hash = 0;
+  for (let i = 0; i < rounds; i++) {
+    for (let j = 0; j < input.length; j++) {
+      const char = input.charCodeAt(j);
+      hash = (hash * 31 + char + i * 17) % 1000000007;
     }
-
+    input = hash.toString();
+  }
+  return hash;
+}
     // 20 Logic Method to generate BIGG/SMALL prediction
     function getPredictionType(period) {
       // Generate the base hash using the period number
