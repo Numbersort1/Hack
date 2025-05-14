@@ -2,136 +2,184 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MINES</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wingo Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { box-sizing: border-box; }
-
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background-color: black;
-      color: red;
-      font-family: 'Segoe UI', sans-serif;
-      height: 100vh;
+    }
+    body, html {
+      height: 100%;
+      width: 100%;
       overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #000;
+      color: #00ff00;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
     }
-
     #particles-js {
       position: absolute;
       width: 100%;
       height: 100%;
       z-index: 0;
+    }
+    .period {
+      margin-top: 30px;
+      border: 2px solid #00ff00;
+      border-radius: 20px;
+      padding: 20px 55px;
+      font-size: 26px;
+      text-align: center;
+      box-shadow: 0 0 20px #00ff00, 0 0 10px #00ff00;
+      text-shadow: 0 0 10px #00ff00;
+      z-index: 2;
+    }
+    .start-btn {
+      margin-top: 40px;
+      padding: 10px 40px;
+      font-size: 24px;
       background-color: transparent;
+      border: 3px solid #00ff00;
+      border-radius: 30px;
+      color: #00ff00;
+      box-shadow: 0 0 20px #00ff00, inset 0 0 10px #00ff00;
+      cursor: pointer;
+      text-shadow: 0 0 10px #00ff00;
+      z-index: 2;
     }
-
-    h1 {
+    .start-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .middle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      width: 100%;
+      z-index: 2;
+    }
+    .prediction {
       font-size: 40px;
-      font-weight: 900;
-      letter-spacing: 5px;
-      text-shadow: 0 0 10px red, 0 0 25px red;
-      z-index: 1;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(5, 60px);
-      grid-template-rows: repeat(5, 60px);
-      gap: 10px;
-      margin: 30px 0;
-      z-index: 1;
-    }
-
-    .box {
-      width: 60px;
-      height: 60px;
-      background-color: #111;
-      border: 2px solid red;
-      border-radius: 8px;
-      cursor: pointer;
-      perspective: 600px;
-      transition: transform 0.6s;
-    }
-
-    .flipped {
-      background-color: red !important;
-      box-shadow: 0 0 10px red, inset 0 0 10px red;
-      transform: rotateY(180deg);
-    }
-
-    button {
-      padding: 14px 30px;
-      font-size: 18px;
-      background-color: red;
-      color: black;
-      border: none;
-      border-radius: 10px;
       font-weight: bold;
-      cursor: pointer;
-      z-index: 1;
-      box-shadow: 0 0 15px red;
+      margin: 20px 0;
+      text-shadow: 0 0 15px #00ff00;
     }
-
-    button:hover {
-      background-color: #ff1a1a;
-      box-shadow: 0 0 30px red;
+    .skip-msg {
+      font-size: 18px;
+      font-style: italic;
+      margin-top: 10px;
+      text-shadow: 0 0 10px #00ff00;
+    }
+    .bottom-msg {
+      margin-bottom: 30px;
+      font-size: 18px;
+      text-shadow: 0 0 10px #00ff00;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
   <div id="particles-js"></div>
-  <h1>MINES</h1>
-  <div class="grid" id="grid"></div>
-  <button onclick="startPrediction()">START</button>
+  <div class="period" id="period">Period: Loading...</div>
+  <button id="startBtn" class="start-btn">START</button>
+  <div class="middle">
+    <div class="skip-msg" id="skipMsg">SKIP</div>
+    <div class="prediction" id="prediction"></div>
+  </div>
+  <div class="bottom-msg">Powered by SKYMAXX</div>
 
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
     particlesJS("particles-js", {
       particles: {
-        number: { value: 100, density: { enable: true, value_area: 800 }},
-        color: { value: "#ff2e2e" },
+        number: { value: 200, density: { enable: true, value_area: 800 } },
+        color: { value: "#00ff00" },
         shape: { type: "circle" },
         opacity: { value: 1 },
-        size: { value: 4, random: true, anim: { enable: true, speed: 4, size_min: 1, sync: false }},
-        line_linked: { enable: true, distance: 130, color: "#ff2e2e", opacity: 0.6, width: 1.4 },
-        move: { enable: true, speed: 2, random: true, out_mode: "out" }
+        size: {
+          value: 5,
+          random: true,
+          anim: { enable: true, speed: 4, size_min: 2, sync: false }
+        },
+        line_linked: {
+          enable: true,
+          distance: 120,
+          color: "#00ff00",
+          opacity: 0.5,
+          width: 1.2
+        },
+        move: {
+          enable: true,
+          speed: 2,
+          random: true,
+          out_mode: "out"
+        }
       },
       interactivity: {
         detect_on: "canvas",
-        events: { onhover: { enable: true, mode: "grab" }},
-        modes: { grab: { distance: 140, line_linked: { opacity: 1 }}}
+        events: {
+          onhover: { enable: true, mode: "grab" },
+          onclick: { enable: false }
+        },
+        modes: {
+          grab: { distance: 140, line_linked: { opacity: 1 } }
+        }
       },
       retina_detect: true
     });
 
-    const grid = document.getElementById('grid');
-
-    for (let i = 0; i < 25; i++) {
-      const box = document.createElement('div');
-      box.className = 'box';
-      grid.appendChild(box);
+    function formatPeriod(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      const sod = new Date(y, date.getMonth(), date.getDate(), 0, 0, 0);
+      const minsSinceMidnight = Math.floor((date - sod) / 60000);
+      const newPeriod = Math.floor(minsSinceMidnight / 3); // Every 3 minutes
+      return `${y}${m}${d}${String(newPeriod).padStart(4, '0')}`;
     }
 
-    function startPrediction() {
-      // Clear all previous
-      document.querySelectorAll('.box').forEach(box => box.classList.remove('flipped'));
+    function predictTwoNumbers(period) {
+      const seed = parseInt(period.slice(-4));
+      const n1 = (seed * 7 + 3) % 10;
+      const n2 = (seed * 11 + 5) % 10;
+      return [n1, n2];
+    }
 
-      // Flip 2 to 8 random boxes
-      const boxes = Array.from(document.querySelectorAll('.box'));
-      const count = Math.floor(Math.random() * 4) + 2; // 2 to 8
-      const selected = [];
+    let lastPeriod = '';
 
-      while (selected.length < count) {
-        const rand = Math.floor(Math.random() * 25);
-        if (!selected.includes(rand)) selected.push(rand);
+    function updatePeriodAndPrediction() {
+      const now = new Date();
+      const period = formatPeriod(now);
+      document.getElementById('period').textContent = `Period: ${period}`;
+
+      if (period !== lastPeriod) {
+        lastPeriod = period;
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('prediction').textContent = '';
+        document.getElementById('skipMsg').textContent = 'Ready✅. Start';
       }
 
-      selected.forEach(index => boxes[index].classList.add('flipped'));
+      requestAnimationFrame(updatePeriodAndPrediction);
     }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const periodText = document.getElementById('period').textContent;
+      const period = periodText.replace("Period: ", "");
+      const [num1, num2] = predictTwoNumbers(period);
+      document.getElementById('prediction').textContent = `${num1}, ${num2}`;
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('skipMsg').textContent = '';
+    });
+
+    requestAnimationFrame(updatePeriodAndPrediction);
   </script>
 </body>
 </html>
