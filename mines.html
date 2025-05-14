@@ -166,7 +166,7 @@
     function updatePeriod() {
       const now = new Date();
       const period = formatPeriod(now);
-      document.getElementById('period').textContent = ` ${period}`;
+      document.getElementById('period').textContent = ` period:${period}`;
 
       if (period !== lastPeriod) {
         document.getElementById('startBtn').disabled = false;
@@ -180,7 +180,7 @@
 
     document.getElementById('startBtn').addEventListener('click', () => {
       const prediction = predictFromPatterns(lastResults);
-      document.getElementById('prediction').textContent = `Next: ${prediction[0]} & ${prediction[1]}`;
+      document.getElementById('prediction').textContent = `${prediction[0]} - ${prediction[1]}`;
       document.getElementById('startBtn').disabled = true;
       document.getElementById('skipMsg').textContent = '';
     });
