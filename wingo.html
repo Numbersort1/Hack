@@ -10,6 +10,7 @@
       margin: 0;
       padding: 0;
     }
+
     body, html {
       height: 100%;
       width: 100%;
@@ -22,12 +23,14 @@
       justify-content: space-between;
       align-items: center;
     }
+
     #particles-js {
       position: absolute;
       width: 100%;
       height: 100%;
       z-index: 0;
     }
+
     .period {
       margin-top: 30px;
       border: 2px solid red;
@@ -39,6 +42,7 @@
       text-shadow: 0 0 10px red;
       z-index: 2;
     }
+
     .start-btn {
       margin-top: 40px;
       padding: 10px 40px;
@@ -52,11 +56,13 @@
       text-shadow: 0 0 10px red;
       z-index: 2;
     }
+
     .start-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       box-shadow: none;
     }
+
     .middle {
       display: flex;
       flex-direction: column;
@@ -66,18 +72,21 @@
       width: 100%;
       z-index: 2;
     }
+
     .prediction {
       font-size: 40px;
       font-weight: bold;
       margin: 20px 0;
       text-shadow: 0 0 15px red;
     }
+
     .skip-msg {
       font-size: 18px;
       font-style: italic;
       margin-top: 10px;
       text-shadow: 0 0 10px red;
     }
+
     .bottom-msg {
       margin-bottom: 30px;
       font-size: 18px;
@@ -88,8 +97,10 @@
 </head>
 <body>
   <div id="particles-js"></div>
+
   <div class="period" id="period"></div>
   <button id="startBtn" class="start-btn">START</button>
+
   <div class="middle">
     <div class="skip-msg" id="skipMsg">SKIP</div>
     <div class="prediction" id="prediction"></div>
@@ -101,16 +112,30 @@
     particlesJS("particles-js", {
       "particles": {
         "number": {
-          "value": 190,
-          "density": { "enable": true, "value_area": 800 }
+          "value": 200,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
         },
-        "color": { "value": "#ff2e2e" },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 1, "random": false },
+        "color": {
+          "value": "#ff2e2e"
+        },
+        "shape": {
+          "type": "circle"
+        },
+        "opacity": {
+          "value": 1
+        },
         "size": {
           "value": 5,
           "random": true,
-          "anim": { "enable": true, "speed": 4, "size_min": 2, "sync": false }
+          "anim": {
+            "enable": true,
+            "speed": 4,
+            "size_min": 2,
+            "sync": false
+          }
         },
         "line_linked": {
           "enable": true,
@@ -122,86 +147,84 @@
         "move": {
           "enable": true,
           "speed": 2,
-          "direction": "none",
           "random": true,
           "straight": false,
-          "out_mode": "out",
-          "bounce": false
+          "out_mode": "out"
         }
       },
       "interactivity": {
         "detect_on": "canvas",
         "events": {
-          "onhover": { "enable": true, "mode": "grab" },
-          "onclick": { "enable": false }
+          "onhover": {
+            "enable": true,
+            "mode": "grab"
+          }
         },
         "modes": {
-          "grab": { "distance": 140, "line_linked": { "opacity": 1 } }
+          "grab": {
+            "distance": 140,
+            "line_linked": {
+              "opacity": 1
+            }
+          }
         }
       },
       "retina_detect": true
     });
 
-    let recentPredictions = [];
-
     function getPredictionType(period) {
-      const outcomes = [
-        { label: "BIGG 2/4", weight: 3 },
-        { label: "BIGG 1/3", weight: 2 },
-        { label: "SMALL 6/8", weight: 2 },
-        { label: "SMALL 7/9", weight: 3 }
+      const options = [
+        { label: "BIGGG 0/4", baseWeight: 2 },
+        { label: "BIGGG 1/3", baseWeight: 3 },
+        { label: "BIGGG 2/4", baseWeight: 4 },
+        { label: "SMALL 5/7", baseWeight: 3 },
+        { label: "SMALL 6/8", baseWeight: 4 },
+        { label: "SMALL 7/9", baseWeight: 2 }
       ];
 
+      // Generate seed from period
       let seed = 0;
       for (let i = 0; i < period.length; i++) {
         const char = period.charCodeAt(i);
-        seed = (seed * 41 + char + i * 17) % 100003;
+        seed = (seed * 37 + char + i * 19) % 100007;
       }
 
       const now = new Date();
-      const sec = now.getSeconds();
       const hour = now.getHours();
+      const minute = now.getMinutes();
+      const sec = now.getSeconds();
       const day = now.getDay();
-      const minute = parseInt(period.slice(-2));
-      const isEven = minute % 2 === 0;
 
-      seed = (seed * (sec + 3) + day * 7 + hour * 13) % 99991;
-      const complexityLayer = ((seed * 23) ^ (seed >> 2)) % 1000;
+      const lastFourDigits = parseInt(period.slice(-4));
+      const sumDigits = [...String(lastFourDigits)].reduce((a, b) => a + parseInt(b), 0);
+      const evenOddBias = sumDigits % 2 === 0 ? 'even' : 'odd';
 
-      const dynamicWeights = outcomes.map((item) => {
-        let modifier = item.weight;
-        if (isEven && item.label.includes("BIGG")) modifier += 1;
-        if (!isEven && item.label.includes("SMALL")) modifier += 1;
-        if (hour >= 12 && item.label.includes("BIGG")) modifier += 1;
-        if (hour < 12 && item.label.includes("SMALL")) modifier += 1;
-        if (day === 0 || day === 6) modifier += 1;
-        return { label: item.label, weight: modifier };
+      const weightedOptions = options.map(opt => {
+        let weight = opt.baseWeight;
+
+        if (opt.label.includes("BIGGG") && hour >= 12) weight += 1;
+        if (opt.label.includes("SMALL") && hour < 12) weight += 1;
+
+        if (evenOddBias === 'even' && opt.label.includes("BIGGG")) weight += 1;
+        if (evenOddBias === 'odd' && opt.label.includes("SMALL")) weight += 1;
+
+        if (minute % 10 < 5 && opt.label.includes("0/4")) weight += 1;
+        if (minute % 3 === 0 && opt.label.includes("5/7")) weight += 1;
+
+        if (day === 0 || day === 6) weight += 1;
+
+        return { label: opt.label, weight };
       });
 
-      const totalWeight = dynamicWeights.reduce((sum, o) => sum + o.weight, 0);
-      let rand = complexityLayer % totalWeight;
+      const totalWeight = weightedOptions.reduce((sum, opt) => sum + opt.weight, 0);
+      let random = (seed + sec * 13 + minute * 7 + hour * 5) % totalWeight;
 
-      // Soft correction logic
-      if (recentPredictions.length >= 3 &&
-          recentPredictions.every(p => p === recentPredictions[0])) {
-        rand = (rand + 1) % totalWeight; // Avoid too many same predictions
+      for (let i = 0; i < weightedOptions.length; i++) {
+        random -= weightedOptions[i].weight;
+        if (random < 0) return weightedOptions[i].label;
       }
 
-      for (let i = 0; i < dynamicWeights.length; i++) {
-        rand -= dynamicWeights[i].weight;
-        if (rand < 0) {
-          const chosen = dynamicWeights[i].label;
-          recentPredictions.push(chosen);
-          if (recentPredictions.length > 4) recentPredictions.shift();
-          return chosen;
-        }
-      }
-
-      // Fallback
-      const fallback = dynamicWeights[Math.floor(Math.random() * dynamicWeights.length)].label;
-      recentPredictions.push(fallback);
-      if (recentPredictions.length > 4) recentPredictions.shift();
-      return fallback;
+      return weightedOptions[Math.floor(Math.random() * weightedOptions.length)].label;
     }
 
     function formatPeriod(date) {
@@ -212,8 +235,6 @@
       const mins = Math.floor((date - sod) / 60000);
       return `${y}${m}${d}${String(mins).padStart(4, '0')}`;
     }
-
-    let lastPeriod = '';
 
     function updatePeriod() {
       const now = new Date();
@@ -229,6 +250,8 @@
       lastPeriod = period;
       requestAnimationFrame(updatePeriod);
     }
+
+    let lastPeriod = '';
 
     document.getElementById('startBtn').addEventListener('click', () => {
       const period = document.getElementById('period').textContent.replace("Period: ", "");
