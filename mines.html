@@ -156,7 +156,7 @@
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
       const d = String(date.getDate()).padStart(2, '0');
-      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
+      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -3, 0);
       const mins = Math.floor((date - sod) / 60000);
       return `${y}${m}${d}${String(Math.floor(mins / 3)).padStart(4, '0')}`;
     }
