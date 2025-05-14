@@ -5,14 +5,9 @@
   <title>Wingo Predictor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body, html {
-      height: 100%;
-      width: 100%;
+      height: 100%; width: 100%;
       overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
       background-color: #000;
@@ -24,8 +19,7 @@
     }
     #particles-js {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       z-index: 0;
     }
     .period {
@@ -88,7 +82,7 @@
 </head>
 <body>
   <div id="particles-js"></div>
-  <div class="period" id="period">Period: Loading...</div>
+  <div class="period" id="period"></div>
   <button id="startBtn" class="start-btn">START</button>
   <div class="middle">
     <div class="skip-msg" id="skipMsg">SKIP</div>
@@ -98,88 +92,100 @@
 
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
+    // Particle effect
     particlesJS("particles-js", {
-      particles: {
-        number: { value: 200, density: { enable: true, value_area: 800 } },
-        color: { value: "#00ff00" },
-        shape: { type: "circle" },
-        opacity: { value: 1 },
-        size: {
-          value: 5,
-          random: true,
-          anim: { enable: true, speed: 4, size_min: 2, sync: false }
+      "particles": {
+        "number": { "value": 200, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#00ff00" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 1 },
+        "size": {
+          "value": 5,
+          "random": true,
+          "anim": { "enable": true, "speed": 4, "size_min": 2 }
         },
-        line_linked: {
-          enable: true,
-          distance: 120,
-          color: "#00ff00",
-          opacity: 0.5,
-          width: 1.2
+        "line_linked": {
+          "enable": true,
+          "distance": 120,
+          "color": "#00ff00",
+          "opacity": 0.5,
+          "width": 1.2
         },
-        move: {
-          enable: true,
-          speed: 2,
-          random: true,
-          out_mode: "out"
+        "move": { "enable": true, "speed": 2, "random": true }
+      },
+      "interactivity": {
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" }
+        },
+        "modes": {
+          "grab": { "distance": 140, "line_linked": { "opacity": 1 } }
         }
       },
-      interactivity: {
-        detect_on: "canvas",
-        events: {
-          onhover: { enable: true, mode: "grab" },
-          onclick: { enable: false }
-        },
-        modes: {
-          grab: { distance: 140, line_linked: { opacity: 1 } }
-        }
-      },
-      retina_detect: true
+      "retina_detect": true
     });
+
+    // Static last 20 results
+    const lastResults = [1, 0, 3, 7, 9, 4, 1, 0, 7, 2, 8, 8, 6, 8, 8, 4, 6, 3, 2, 0];
+
+    function predictFromPatterns(results) {
+      const rev = [...results].slice(0, 20); // recent 20
+
+      // Pattern 1: Sum of last 3 mod 10
+      const sumLast3 = (rev[0] + rev[1] + rev[2]) % 10;
+
+      // Pattern 2: Avg of 4
+      const avg4 = Math.round((rev[0] + rev[1] + rev[2] + rev[3]) / 4) % 10;
+
+      // Pattern 3: Max - Min last 3
+      const maxMinDiff = Math.max(...rev.slice(0, 3)) - Math.min(...rev.slice(0, 3));
+
+      // Pattern 4: Frequency-based
+      const freq = {};
+      rev.forEach(n => freq[n] = (freq[n] || 0) + 1);
+      const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+      const freqTop = parseInt(sorted[0][0]);
+
+      // Merge result and remove duplicate
+      const predictions = [sumLast3, avg4, maxMinDiff, freqTop];
+      const unique = [...new Set(predictions)].slice(0, 2); // get 2
+
+      return unique;
+    }
 
     function formatPeriod(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
       const d = String(date.getDate()).padStart(2, '0');
-      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -3, 0);
-      const minsSinceMidnight = Math.floor((date - sod) / 60000);
-      const newPeriod = Math.floor(minsSinceMidnight / 3); // Every 3 minutes
-      return `${y}${m}${d}${String(newPeriod).padStart(4, '0')}`;
-    }
-
-    function predictTwoNumbers(period) {
-      const seed = parseInt(period.slice(-4));
-      const n1 = (seed * 7 + 3) % 10;
-      const n2 = (seed * 11 + 5) % 10;
-      return [n1, n2];
+      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
+      const mins = Math.floor((date - sod) / 60000);
+      return `${y}${m}${d}${String(Math.floor(mins / 3)).padStart(4, '0')}`;
     }
 
     let lastPeriod = '';
 
-    function updatePeriodAndPrediction() {
+    function updatePeriod() {
       const now = new Date();
       const period = formatPeriod(now);
       document.getElementById('period').textContent = `Period: ${period}`;
 
       if (period !== lastPeriod) {
-        lastPeriod = period;
         document.getElementById('startBtn').disabled = false;
         document.getElementById('prediction').textContent = '';
         document.getElementById('skipMsg').textContent = 'Ready✅. Start';
       }
 
-      requestAnimationFrame(updatePeriodAndPrediction);
+      lastPeriod = period;
+      requestAnimationFrame(updatePeriod);
     }
 
     document.getElementById('startBtn').addEventListener('click', () => {
-      const periodText = document.getElementById('period').textContent;
-      const period = periodText.replace("Period: ", "");
-      const [num1, num2] = predictTwoNumbers(period);
-      document.getElementById('prediction').textContent = `${num1}, ${num2}`;
+      const prediction = predictFromPatterns(lastResults);
+      document.getElementById('prediction').textContent = `Next: ${prediction[0]} & ${prediction[1]}`;
       document.getElementById('startBtn').disabled = true;
       document.getElementById('skipMsg').textContent = '';
     });
 
-    requestAnimationFrame(updatePeriodAndPrediction);
+    requestAnimationFrame(updatePeriod);
   </script>
 </body>
 </html>
