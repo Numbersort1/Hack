@@ -124,32 +124,14 @@
       "retina_detect": true
     });
 
-    // Static last 20 results
-    const lastResults = [1, 0, 3, 7, 9, 4, 1, 0, 7, 2, 8, 8, 6, 8, 8, 4, 6, 3, 2, 0];
+    function predictFromPatterns(period) {
+      const num = parseInt(period.slice(-4)); // last 4 digits
 
-    function predictFromPatterns(results) {
-      const rev = [...results].slice(0, 20); // recent 20
+      const p1 = num % 10;
+      const p2 = ((Math.floor(num / 10) + num % 100) % 10);
 
-      // Pattern 1: Sum of last 3 mod 10
-      const sumLast3 = (rev[0] + rev[1] + rev[2]) % 10;
-
-      // Pattern 2: Avg of 4
-      const avg4 = Math.round((rev[0] + rev[1] + rev[2] + rev[3]) / 4) % 10;
-
-      // Pattern 3: Max - Min last 3
-      const maxMinDiff = Math.max(...rev.slice(0, 3)) - Math.min(...rev.slice(0, 3));
-
-      // Pattern 4: Frequency-based
-      const freq = {};
-      rev.forEach(n => freq[n] = (freq[n] || 0) + 1);
-      const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-      const freqTop = parseInt(sorted[0][0]);
-
-      // Merge result and remove duplicate
-      const predictions = [sumLast3, avg4, maxMinDiff, freqTop];
-      const unique = [...new Set(predictions)].slice(0, 2); // get 2
-
-      return unique;
+      // Ensure unique predictions
+      return (p1 === p2) ? [p1, (p2 + 1) % 10] : [p1, p2];
     }
 
     function formatPeriod(date) {
@@ -179,7 +161,9 @@
     }
 
     document.getElementById('startBtn').addEventListener('click', () => {
-      const prediction = predictFromPatterns(lastResults);
+      const now = new Date();
+      const period = formatPeriod(now);
+      const prediction = predictFromPatterns(period);
       document.getElementById('prediction').textContent = `${prediction[0]} - ${prediction[1]}`;
       document.getElementById('startBtn').disabled = true;
       document.getElementById('skipMsg').textContent = '';
