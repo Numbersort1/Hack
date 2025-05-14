@@ -140,7 +140,7 @@
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
       const d = String(date.getDate()).padStart(2, '0');
-      const sod = new Date(y, date.getMonth(), date.getDate(), 0, 0, 0);
+      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -3, 0);
       const minsSinceMidnight = Math.floor((date - sod) / 60000);
       const newPeriod = Math.floor(minsSinceMidnight / 3); // Every 3 minutes
       return `${y}${m}${d}${String(newPeriod).padStart(4, '0')}`;
