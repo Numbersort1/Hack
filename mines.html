@@ -166,7 +166,7 @@
     function updatePeriod() {
       const now = new Date();
       const period = formatPeriod(now);
-      document.getElementById('period').textContent = `Period: ${period}`;
+      document.getElementById('period').textContent = ` ${period}`;
 
       if (period !== lastPeriod) {
         document.getElementById('startBtn').disabled = false;
