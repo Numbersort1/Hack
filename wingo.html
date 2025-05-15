@@ -21,8 +21,7 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-    }
-    #particles-js {
+    }particles-js {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -216,10 +215,11 @@
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
       const d = String(date.getDate()).padStart(2, '0');
-      // Minutes from midnight
-      const mins = date.getHours() * 60 + date.getMinutes();
+      const sod = new Date(y, date.getMonth(), date.getDate(), 0, -1, 0);
+      const mins = Math.floor((date - sod) / 60000);
       return `${y}${m}${d}${String(mins).padStart(4, '0')}`;
     }
+    
 
     function updatePeriod() {
       const now = new Date();
